@@ -418,29 +418,26 @@
         }
 
         .app-preview {
-            height: 160px;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 180px;
             position: relative;
+            overflow: hidden;
         }
 
-        .app-preview-icon {
-            width: 72px;
-            height: 72px;
-            background: var(--accent-gradient);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-glow);
+        .app-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
         }
 
-        .app-preview-icon svg {
-            width: 36px;
-            height: 36px;
-            stroke: white;
+        .app-card:hover .app-preview img {
+            transform: scale(1.05);
+        }
+
+        .app-preview-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(5, 32, 60, 0.9) 100%);
         }
 
         .app-badges {
@@ -479,11 +476,47 @@
             padding: var(--spacing-lg);
         }
 
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-xs);
+        }
+
         .app-name {
             font-size: 1.125rem;
             font-weight: 600;
-            margin-bottom: var(--spacing-xs);
             color: var(--text-primary);
+        }
+
+        .app-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--glass-bg-hover);
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+        }
+
+        .icon-btn svg {
+            width: 16px;
+            height: 16px;
         }
 
         .app-desc {
@@ -685,6 +718,247 @@
             color: var(--text-muted);
         }
 
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 12, 27, 0.9);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            max-width: 480px;
+            width: 90%;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+        }
+
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Feedback Modal */
+        .feedback-app-name {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .feedback-rating {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .rating-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg);
+            background: var(--glass-bg);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .rating-btn:hover {
+            background: var(--glass-bg-hover);
+            border-color: var(--border-light);
+        }
+
+        .rating-btn.selected {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .rating-btn.selected.positive {
+            border-color: var(--status-success);
+            background: rgba(0, 210, 106, 0.1);
+        }
+
+        .rating-btn.selected.negative {
+            border-color: var(--status-error);
+            background: rgba(232, 70, 43, 0.1);
+        }
+
+        .rating-btn svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .rating-btn.positive svg {
+            stroke: var(--status-success);
+        }
+
+        .rating-btn.negative svg {
+            stroke: var(--status-error);
+        }
+
+        .rating-btn span {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .feedback-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: var(--spacing-md);
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            font-size: 0.9375rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            resize: vertical;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.2s ease;
+        }
+
+        .feedback-textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(7, 112, 227, 0.2);
+        }
+
+        .feedback-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .feedback-submit {
+            width: 100%;
+            height: 48px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feedback-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .feedback-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback-success {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+        }
+
+        .feedback-success svg {
+            width: 64px;
+            height: 64px;
+            stroke: var(--status-success);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .feedback-success h3 {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feedback-success p {
+            color: var(--text-secondary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            box-shadow: var(--shadow-md);
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--status-success);
+        }
+
+        .toast span {
+            font-size: 0.875rem;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .hero h1 {
@@ -706,6 +980,10 @@
 
             .login-container {
                 margin: var(--spacing-md);
+            }
+
+            .feedback-rating {
+                flex-direction: column;
             }
         }
 
@@ -789,21 +1067,32 @@
 
                 <div class="app-grid">
                     <!-- BookItList -->
-                    <div class="app-card">
+                    <div class="app-card" data-app="BookItList">
                         <div class="app-preview">
-                            <div class="app-preview-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                                </svg>
-                            </div>
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop" alt="BookItList - 3D Globe">
+                            <div class="app-preview-overlay"></div>
                             <div class="app-badges">
                                 <span class="badge live">Live</span>
                                 <span class="badge new">New</span>
                             </div>
                         </div>
                         <div class="app-body">
-                            <h3 class="app-name">BookItList</h3>
+                            <div class="app-header">
+                                <h3 class="app-name">BookItList</h3>
+                                <div class="app-actions">
+                                    <button class="icon-btn" onclick="shareApp('BookItList', 'https://phil-donathy.github.io/travel-tracker/')" title="Share">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                                            <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+                                        </svg>
+                                    </button>
+                                    <button class="icon-btn" onclick="openFeedback('BookItList')" title="Give Feedback">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                             <p class="app-desc">Track your travel bucket list on an interactive 3D globe with climate-smart suggestions for when to visit.</p>
                             <div class="app-footer">
                                 <span class="app-meta">
@@ -825,21 +1114,32 @@
                     </div>
 
                     <!-- SkySwipe -->
-                    <div class="app-card">
+                    <div class="app-card" data-app="SkySwipe">
                         <div class="app-preview">
-                            <div class="app-preview-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                    <path d="M9 12l2 2 4-4"/>
-                                </svg>
-                            </div>
+                            <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop" alt="SkySwipe - Travel Discovery">
+                            <div class="app-preview-overlay"></div>
                             <div class="app-badges">
                                 <span class="badge live">Live</span>
                                 <span class="badge hot">Popular</span>
                             </div>
                         </div>
                         <div class="app-body">
-                            <h3 class="app-name">SkySwipe</h3>
+                            <div class="app-header">
+                                <h3 class="app-name">SkySwipe</h3>
+                                <div class="app-actions">
+                                    <button class="icon-btn" onclick="shareApp('SkySwipe', 'https://phil-donathy.github.io/skyswipe/')" title="Share">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                                            <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+                                        </svg>
+                                    </button>
+                                    <button class="icon-btn" onclick="openFeedback('SkySwipe')" title="Give Feedback">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                             <p class="app-desc">Discover destinations by swiping through beautiful photos. We'll learn your preferences and suggest perfect trips.</p>
                             <div class="app-footer">
                                 <span class="app-meta">
@@ -1016,7 +1316,65 @@
         </footer>
     </div>
 
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="feedbackModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Give Feedback</h2>
+                <button class="modal-close" onclick="closeFeedback()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="feedbackContent">
+                <p class="feedback-app-name">Feedback for <strong id="feedbackAppName">App</strong></p>
+
+                <div class="feedback-rating">
+                    <button class="rating-btn positive" onclick="selectRating(this, 'positive')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                        </svg>
+                        <span>I like it!</span>
+                    </button>
+                    <button class="rating-btn negative" onclick="selectRating(this, 'negative')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+                        </svg>
+                        <span>Needs work</span>
+                    </button>
+                </div>
+
+                <textarea class="feedback-textarea" id="feedbackText" placeholder="Tell us more... What did you like? What could be better?"></textarea>
+
+                <button class="feedback-submit" id="feedbackSubmit" onclick="submitFeedback()" disabled>Submit Feedback</button>
+            </div>
+            <div id="feedbackSuccess" style="display: none;">
+                <div class="feedback-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <path d="M22 4L12 14.01l-3-3"/>
+                    </svg>
+                    <h3>Thanks for your feedback!</h3>
+                    <p>Your input helps us build better experiences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <path d="M22 4L12 14.01l-3-3"/>
+        </svg>
+        <span id="toastMessage">Link copied!</span>
+    </div>
+
     <script>
+        let currentFeedbackApp = '';
+        let selectedRating = null;
+
         // Check if already logged in
         document.addEventListener('DOMContentLoaded', () => {
             const user = localStorage.getItem('labsUser');
@@ -1067,6 +1425,112 @@
             `;
             button.disabled = true;
         }
+
+        // Share functionality
+        async function shareApp(appName, url) {
+            const shareData = {
+                title: `Check out ${appName} on Secret Skyscanner`,
+                text: `I found this cool experimental feature on Skyscanner - ${appName}. Give it a try!`,
+                url: url
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        copyToClipboard(url);
+                    }
+                }
+            } else {
+                copyToClipboard(url);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Link copied to clipboard!');
+            }).catch(() => {
+                showToast('Could not copy link');
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Feedback functionality
+        function openFeedback(appName) {
+            currentFeedbackApp = appName;
+            selectedRating = null;
+            document.getElementById('feedbackAppName').textContent = appName;
+            document.getElementById('feedbackContent').style.display = 'block';
+            document.getElementById('feedbackSuccess').style.display = 'none';
+            document.getElementById('feedbackText').value = '';
+            document.getElementById('feedbackSubmit').disabled = true;
+
+            // Reset rating buttons
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            document.getElementById('feedbackModal').classList.add('active');
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedbackModal').classList.remove('active');
+        }
+
+        function selectRating(button, rating) {
+            selectedRating = rating;
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            button.classList.add('selected');
+            document.getElementById('feedbackSubmit').disabled = false;
+        }
+
+        function submitFeedback() {
+            const feedback = {
+                app: currentFeedbackApp,
+                rating: selectedRating,
+                text: document.getElementById('feedbackText').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Store feedback locally (in a real app, this would go to a backend)
+            const existingFeedback = JSON.parse(localStorage.getItem('labsFeedback') || '[]');
+            existingFeedback.push(feedback);
+            localStorage.setItem('labsFeedback', JSON.stringify(existingFeedback));
+
+            // Show success state
+            document.getElementById('feedbackContent').style.display = 'none';
+            document.getElementById('feedbackSuccess').style.display = 'block';
+
+            // Auto-close after delay
+            setTimeout(() => {
+                closeFeedback();
+            }, 2000);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('feedbackModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('feedbackModal')) {
+                closeFeedback();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeFeedback();
+            }
+        });
     </script>
 </body>
 </html>
